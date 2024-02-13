@@ -1,26 +1,29 @@
 const core = require('@actions/core')
-const github = require('@actions/github')
+const fm = require('front-matter')
+const fs = require('fs')
+const path = require('path')
 
-/**
- * The main function for the action.
- * @returns {Promise<void>} Resolves when the action is complete.
- */
 async function run() {
   try {
-    // The `who-to-greet` input is defined in action metadata file
-    const whoToGreet = core.getInput('who-to-greet', { required: true })
-    core.info(`Hello, ${whoToGreet}!`)
+    const temporalFolder = core.getInput('base-folder', { required: true })
+    const destinationFolder = core.getInput('destination-folder', { required: true })
+    const baseFolderPath = path.join(process.env.GITHUB_WORKSPACE, temporalFolder)
+    fs.readdirSync(baseFullPath).forEach(file => {
+      const baseFilePath = path.join(baseFolderPath, file)
+      fs.readFile(baseFilePath, 'utf8', function(err, data){
+        if (err) throw err
+        const {attributes} = fm(data)
+        if(!attributes || attributes.draft || attributes.published > Date.now() ){
+          console.log(`${file}: not moved (draft -> ${attributes.draft}, future -> ${attributes.published > Date.now()})`);
+          return
+        }
+        const destinationFilePath = path.join(process.env.GITHUB_WORKSPACE, destinationFolder, file)
+        fs.renameSync(baseFilePath, destinationFilePath)
+        console.log(`${file}: moved from ${baseFilePath} to ${destinationFilePath}`);
+      })
+    });
 
-    // Get the current time and set as an output
-    const time = new Date().toTimeString()
-    core.setOutput('time', time)
-
-    // Output the payload for debugging
-    core.info(
-      `The event payload: ${JSON.stringify(github.context.payload, null, 2)}`
-    )
   } catch (error) {
-    // Fail the workflow step if an error occurs
     core.setFailed(error.message)
   }
 }
