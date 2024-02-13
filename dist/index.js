@@ -28520,7 +28520,7 @@ async function run() {
       process.env.GITHUB_WORKSPACE,
       temporalFolder
     )
-    fs.readdirSync(baseFullPath).forEach(file => {
+    fs.readdirSync(baseFolderPath).forEach(file => {
       const baseFilePath = path.join(baseFolderPath, file)
       fs.readFile(baseFilePath, 'utf8', function (err, data) {
         if (err) throw err
