@@ -28525,25 +28525,21 @@ async function run() {
       fs.readFile(baseFilePath, 'utf8', function (err, data) {
         if (err) throw err
         const { attributes } = fm(data)
-
-        const destinationFilePath = path.join(
-          process.env.GITHUB_WORKSPACE,
-          destinationFolder,
-          file
-        )
         if (
           !attributes ||
           attributes.draft ||
           attributes.published > Date.now()
         ) {
           console.log(
-            `${file}:not  moved from ${baseFilePath} to ${destinationFilePath}`
-          )
-          console.log(
             `${file}: not moved (draft -> ${attributes.draft}, future -> ${attributes.published > Date.now()})`
           )
           return
         }
+        const destinationFilePath = path.join(
+          process.env.GITHUB_WORKSPACE,
+          destinationFolder,
+          file
+        )
         fs.renameSync(baseFilePath, destinationFilePath)
         console.log(
           `${file}: moved from ${baseFilePath} to ${destinationFilePath}`
