@@ -1,28 +1,6 @@
-# Hello, World! JavaScript Action
+# ![docusaurus scheduler2](https://github.com/alvarolorentedev/docusaurus-scheduler/assets/3071208/efa7646d-318c-4e6c-8b08-d473ab50fbe0) Docusaurus Scheduler
 
-[![GitHub Super-Linter](https://github.com/alvarolorentedev/docusaurus-scheduler/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
-![CI](https://github.com/alvarolorentedev/docusaurus-scheduler/actions/workflows/ci.yml/badge.svg)
-
-This action prints `Hello, World!` or `Hello, <who-to-greet>!` to the log. To
-learn how this action was built, see
-[Creating a JavaScript action](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action).
-
-## Create Your Own Action
-
-To create your own action, you can use this repository as a template! Just
-follow the below instructions:
-
-1. Click the **Use this template** button at the top of the repository
-1. Select **Create a new repository**
-1. Select an owner and name for your new repository
-1. Click **Create repository**
-1. Clone your new repository
-
-> [!CAUTION]
->
-> Make sure to remove or update the [`CODEOWNERS`](./CODEOWNERS) file! For
-> details on how to use this file, see
-> [About code owners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
+A docusarus compatible github action to schedule article releases
 
 ## Usage
 
@@ -33,41 +11,28 @@ name: Example Workflow
 
 on:
   workflow_dispatch:
-    inputs:
-      who-to-greet:
-        description: Who to greet in the log
-        required: true
-        default: 'World'
-        type: string
 
 jobs:
-  say-hello:
-    name: Say Hello
+  release:
     runs-on: ubuntu-latest
-
     steps:
-      # Change @main to a specific commit SHA or version tag, e.g.:
-      # alvarolorentedev/docusaurus-scheduler@e76147da8e5c81eaf017dede5645551d4b94427b
-      # alvarolorentedev/docusaurus-scheduler@v1.2.3
-      - name: Print to Log
-        id: print-to-log
-        uses: alvarolorentedev/docusaurus-scheduler@main
+      #use this action
+      - uses: alvarolorentedev/docusaurus-scheduler@main
         with:
-          who-to-greet: ${{ inputs.who-to-greet }}
+          base-folder: ./scheduler
+          destination-folder: ./blog
+      #Optional - recommended: commit changes
+      - uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          message: '[skip ci] Moved scheduled articles'
 ```
-
-For example workflow runs, check out the
-[Actions tab](https://github.com/alvarolorentedev/docusaurus-scheduler/actions)!
-:rocket:
 
 ## Inputs
 
 | Input          | Default | Description                     |
 | -------------- | ------- | ------------------------------- |
-| `who-to-greet` | `World` | The name of the person to greet |
+| `base-folder` | `./scheduler` | the folder for the drafts and unpublished articles |
+| ` destination-folder` | `./blog` | the folder for the publised articles |
 
-## Outputs
 
-| Output | Description             |
-| ------ | ----------------------- |
-| `time` | The time we greeted you |
